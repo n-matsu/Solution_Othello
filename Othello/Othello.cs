@@ -87,9 +87,12 @@ namespace OthelloApp
 			eCellState newState = GetCellState(changedX, changedY);
 			var last = Enumerable.Range(1, SIZE)
 				.Select(shift => new { X = vectorX * shift, Y = vectorY * shift })
-				.TakeWhile(cell => newState != GetCellState(cell.X, cell.Y))
+				.TakeWhile(cell =>
+					0 <= cell.X && cell.X <= SIZE &&
+					0 <= cell.Y && cell.Y <= SIZE &&
+					newState != GetCellState(cell.X, cell.Y))
 				.LastOrDefault();
-			return last.X != 0 && last.Y != 0;
+			return last != null && last.X != 0 && last.Y != 0;
 		}
 
 		private void SetCellState_Update(int changedX, int changedY, int vectorX, int vectorY)
@@ -97,7 +100,10 @@ namespace OthelloApp
 			eCellState newState = GetCellState(changedX, changedY);
 			Enumerable.Range(1, SIZE)
 				.Select(shift => new { X = vectorX * shift, Y = vectorY * shift })
-				.TakeWhile(cell => newState != GetCellState(cell.X, cell.Y))
+				.TakeWhile(cell =>
+					0 <= cell.X && cell.X <= SIZE &&
+					0 <= cell.Y && cell.Y <= SIZE &&
+					newState != GetCellState(cell.X, cell.Y))
 				.Select(cell => { SetCellState(cell.X, cell.Y, newState); return true; })
 				.ToList();
 		}
