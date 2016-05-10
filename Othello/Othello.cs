@@ -7,29 +7,6 @@ using System.Windows;
 
 namespace OthelloApp
 {
-	public class IndexedElem<TElem>
-	{
-		public TElem Elem { get; private set; }
-		public int X { get; private set; }
-		public int Y { get; private set; }
-		public IndexedElem(TElem elem, int x, int y)
-		{
-			this.Elem = elem;
-			this.X = x;
-			this.Y = y;
-		}
-	}
-
-	public static class ArrayExtensions
-	{
-		public static IEnumerable<IndexedElem<TElem>> EnumerateWithIndex<TElem>(this TElem[,] values)
-		{
-			for (int x = 0; x < values.GetLength(0); x++)
-				for (int y = 0; y < values.GetLength(0); y++)
-					yield return new IndexedElem<TElem>(values[x, y], x, y);
-		}
-	}
-
 	public class Othello
 	{
 		public enum eCellState
@@ -74,12 +51,12 @@ namespace OthelloApp
 			//変更セルの周囲8方向を単位ベクトル組み合わせで列挙、方向別に反転の判定・実行
 			var vectors = new[] { -1, 0, 1 };
 			vectors
-			.Select(vector => new { vX = vector, vYs = vectors })
-			.SelectMany(vector => vector.vYs, (vector, vY) => new { X = vector.vX, Y = vY })
-			.AsParallel()
-			.Where(vector => SetCellState_HasToUpdate(x, y, vector.X, vector.Y))
-			.Select(vector => { SetCellState_Update(x, y, vector.X, vector.Y); return true; })
-			.ToList();
+				.Select(vector => new { vX = vector, vYs = vectors })
+				.SelectMany(vector => vector.vYs, (vector, vY) => new { X = vector.vX, Y = vY })
+				.AsParallel()
+				.Where(vector => SetCellState_HasToUpdate(x, y, vector.X, vector.Y))
+				.Effect(vector => SetCellState_Update(x, y, vector.X, vector.Y))
+				.ToList();
 		}
 
 		private bool SetCellState_HasToUpdate(int changedX, int changedY, int vectorX, int vectorY)
@@ -97,7 +74,7 @@ namespace OthelloApp
 					0 <= cell.X && cell.X < SIZE &&
 					0 <= cell.Y && cell.Y < SIZE &&
 					eCellState.Empty != GetCellState(cell.X, cell.Y))
-				.Select(cell => { nToUpdate++; return cell; })
+				.Effect(cell => nToUpdate++)
 				.SkipWhile(cell => newState != GetCellState(cell.X, cell.Y))
 				.Take(1)
 				.LastOrDefault();
@@ -119,7 +96,7 @@ namespace OthelloApp
 					0 <= cell.Y && cell.Y < SIZE &&
 					eCellState.Empty != GetCellState(cell.X, cell.Y) &&
 					newState != GetCellState(cell.X, cell.Y))
-				.Select(cell => { SetCellState(cell.X, cell.Y, newState); return true; })
+				.Effect(cell => SetCellState(cell.X, cell.Y, newState))
 				.ToList();
 		}
 
