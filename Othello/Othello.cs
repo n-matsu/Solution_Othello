@@ -7,7 +7,6 @@ using System.Windows;
 
 namespace OthelloApp
 {
-
 	public class IndexedElem<TElem>
 	{
 		public TElem Elem { get; private set; }
@@ -72,6 +71,7 @@ namespace OthelloApp
 			if (oldState == newState) return;
 			m_cells[x, y] = newState;
 
+			//変更セルの周囲8方向を単位ベクトル組み合わせで列挙、方向別に反転の判定・実行
 			var vectors = new[] { -1, 0, 1 };
 			vectors
 			.Select(vector => new { vX = vector, vYs = vectors })
@@ -84,6 +84,7 @@ namespace OthelloApp
 
 		private bool SetCellState_HasToUpdate(int changedX, int changedY, int vectorX, int vectorY)
 		{
+			//単位ベクトル方向に、変更セルから近いセル順に列挙・判定
 			int nToUpdate = 0;
 			eCellState newState = GetCellState(changedX, changedY);
 			var last = Enumerable.Range(1, SIZE - 1)
@@ -105,6 +106,7 @@ namespace OthelloApp
 
 		private void SetCellState_Update(int changedX, int changedY, int vectorX, int vectorY)
 		{
+			//単位ベクトル方向に、変更セルから近いセル順に列挙・反転処理
 			eCellState newState = GetCellState(changedX, changedY);
 			Enumerable.Range(1, SIZE - 1)
 				.Select(shift => new
