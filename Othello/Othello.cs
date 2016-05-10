@@ -5,9 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WpfApplication1
+namespace OthelloApp
 {
-	class Othello
+
+	public class IndexedElem<TElem>
+	{
+		public TElem Elem { get; private set; }
+		public int X { get; private set; }
+		public int Y { get; private set; }
+		public IndexedElem(TElem elem, int x, int y)
+		{
+			this.Elem = elem;
+			this.X = x;
+			this.Y = y;
+		}
+	}
+
+	public static class ArrayExtensions
+	{
+		public static IEnumerable<IndexedElem<TElem>> EnumerateWithIndex<TElem>(this TElem[,] values)
+		{
+			for (int x = 0; x < values.GetLength(0); x++)
+				for (int y = 0; y < values.GetLength(0); y++)
+					yield return new IndexedElem<TElem>(values[x, y], x, y);
+		}
+	}
+
+	public class Othello
 	{
 		public enum eCellState
 		{
@@ -33,12 +57,19 @@ namespace WpfApplication1
 
 		public void Init()
 		{
+			m_cells.EnumerateWithIndex()
+				.Select(cell => { m_cells[cell.X, cell.Y] = eCellState.Empty; return true; })
+				.ToList();
+			m_cells[3, 3] = eCellState.White;
+			m_cells[3, 4] = eCellState.Black;
+			m_cells[4, 3] = eCellState.Black;
+			m_cells[4, 4] = eCellState.White;
 		}
 
 		public void SetCellState(int x, int y, eCellState newState)
 		{
 			var oldState = m_cells[x, y];
-			if(oldState == newState) return;
+			if (oldState == newState) return;
 			m_cells[x, y] = newState;
 
 			var vectors = new[] { -1, 0, 1 };
@@ -54,7 +85,10 @@ namespace WpfApplication1
 		private bool SetCellState_HasToUpdate(int changedX, int changedY, int vectorX, int vectorY)
 		{
 			eCellState newState = GetCellState(changedX, changedY);
-			var last = Enumerable.Range(1, SIZE).Select(shift => new { X = vectorX * shift, Y = vectorY * shift }).TakeWhile(cell => newState != GetCellState(cell.X, cell.Y)).LastOrDefault();
+			var last = Enumerable.Range(1, SIZE)
+				.Select(shift => new { X = vectorX * shift, Y = vectorY * shift })
+				.TakeWhile(cell => newState != GetCellState(cell.X, cell.Y))
+				.LastOrDefault();
 			return last.X != 0 && last.Y != 0;
 		}
 
@@ -68,9 +102,9 @@ namespace WpfApplication1
 				.ToList();
 		}
 
-		public eCellState GetCellState(int row, int col)
+		public eCellState GetCellState(int x, int y)
 		{
-			return m_cells[row, col];
+			return m_cells[x, y];
 		}
 	}
 }
