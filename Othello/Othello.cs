@@ -49,7 +49,7 @@ namespace OthelloApp
 		}
 
 		private const int SIZE = 8;
-		private readonly eCellState[,] m_cells = new eCellState[SIZE + 1, SIZE + 1];
+		private readonly eCellState[,] m_cells = new eCellState[SIZE, SIZE];
 
 		public Othello()
 		{
@@ -84,25 +84,38 @@ namespace OthelloApp
 
 		private bool SetCellState_HasToUpdate(int changedX, int changedY, int vectorX, int vectorY)
 		{
+			int nToUpdate = 0;
 			eCellState newState = GetCellState(changedX, changedY);
-			var last = Enumerable.Range(1, SIZE)
-				.Select(shift => new { X = vectorX * shift, Y = vectorY * shift })
+			var last = Enumerable.Range(1, SIZE - 1)
+				.Select(shift => new
+				{
+					X = changedX + vectorX * shift,
+					Y = changedY + vectorY * shift
+				})
 				.TakeWhile(cell =>
-					0 <= cell.X && cell.X <= SIZE &&
-					0 <= cell.Y && cell.Y <= SIZE &&
-					newState != GetCellState(cell.X, cell.Y))
+					0 <= cell.X && cell.X < SIZE &&
+					0 <= cell.Y && cell.Y < SIZE &&
+					eCellState.Empty != GetCellState(cell.X, cell.Y))
+				.Select(cell => { nToUpdate++; return cell; })
+				.SkipWhile(cell => newState != GetCellState(cell.X, cell.Y))
+				.Take(1)
 				.LastOrDefault();
-			return last != null && last.X != 0 && last.Y != 0;
+			return last != null && 1 < nToUpdate;
 		}
 
 		private void SetCellState_Update(int changedX, int changedY, int vectorX, int vectorY)
 		{
 			eCellState newState = GetCellState(changedX, changedY);
-			Enumerable.Range(1, SIZE)
-				.Select(shift => new { X = vectorX * shift, Y = vectorY * shift })
+			Enumerable.Range(1, SIZE - 1)
+				.Select(shift => new
+				{
+					X = changedX + vectorX * shift,
+					Y = changedY + vectorY * shift
+				})
 				.TakeWhile(cell =>
-					0 <= cell.X && cell.X <= SIZE &&
-					0 <= cell.Y && cell.Y <= SIZE &&
+					0 <= cell.X && cell.X < SIZE &&
+					0 <= cell.Y && cell.Y < SIZE &&
+					eCellState.Empty != GetCellState(cell.X, cell.Y) &&
 					newState != GetCellState(cell.X, cell.Y))
 				.Select(cell => { SetCellState(cell.X, cell.Y, newState); return true; })
 				.ToList();

@@ -47,6 +47,10 @@ namespace OthelloApp.Tests
 			m_othello.SetCellState(3, 2, Othello.eCellState.Black);
 			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 2));
 			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 3));
+			Assert.AreEqual(Othello.eCellState.Empty, m_othello.GetCellState(2, 2));
+			m_othello.SetCellState(2, 2, Othello.eCellState.White);
+			Assert.AreEqual(Othello.eCellState.White, m_othello.GetCellState(3, 3));
+			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 4));
 		}
 
 		[TestMethod()]
