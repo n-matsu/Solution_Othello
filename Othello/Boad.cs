@@ -6,7 +6,7 @@ using System.Reactive.Subjects;
 
 namespace OthelloApp
 {
-	public class Othello
+	public class Boad
 	{
 		internal class Point
 		{
@@ -22,22 +22,28 @@ namespace OthelloApp
 		private const int SIZE = 8;
 		private readonly eCellState[,] m_cells = new eCellState[SIZE, SIZE];
 
-		public IObservable<CellStateChangedEventArgs> evtCellStateChanged =
+		private readonly Subject<CellStateChangedEventArgs> m_evtCellStateChanged =
 			new Subject<CellStateChangedEventArgs>();
+		public IObservable<CellStateChangedEventArgs> evtCellStateChanged => m_evtCellStateChanged;
 
-		public Othello()
+		public Boad()
 		{
 		}
 
 		public void Init()
 		{
+			this.Clear();
+			this.SetCellState(3, 3, eCellState.White);
+			this.SetCellState(3, 4, eCellState.Black);
+			this.SetCellState(4, 3, eCellState.Black);
+			this.SetCellState(4, 4, eCellState.White);
+			this.PrintDebug();
+		}
+
+		public void Clear()
+		{
 			m_cells.EnumerateWithIndex()
 				.Effect(cell => m_cells[cell.X, cell.Y] = eCellState.Empty);
-			m_cells[3, 3] = eCellState.White;
-			m_cells[3, 4] = eCellState.Black;
-			m_cells[4, 3] = eCellState.Black;
-			m_cells[4, 4] = eCellState.White;
-			this.PrintDebug();
 		}
 
 		public eCellState GetCellState(int x, int y)

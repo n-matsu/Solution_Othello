@@ -72,6 +72,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cell.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="Utils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -87,7 +88,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Othello.cs" />
+    <Compile Include="Boad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

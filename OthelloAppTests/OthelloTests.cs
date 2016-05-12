@@ -11,12 +11,12 @@ namespace OthelloApp.Tests
 	[TestClass()]
 	public class OthelloTests
 	{
-		Othello m_othello;
+		Boad m_othello;
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			m_othello = new Othello();
+			m_othello = new Boad();
 		}
 
 		[TestCleanup]

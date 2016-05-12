@@ -20,7 +20,7 @@ namespace OthelloApp
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private Othello m_othello;
+		private Boad m_othello;
 
 		public MainWindow()
 		{
@@ -30,7 +30,7 @@ namespace OthelloApp
 
 		private void MainWindow_Loaded(object sender, RoutedEventArgs e)
 		{
-			m_othello = new Othello();
+			m_othello = new Boad();
 		}
 	}
 }
