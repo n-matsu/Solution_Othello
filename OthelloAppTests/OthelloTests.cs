@@ -35,29 +35,29 @@ namespace OthelloApp.Tests
 		public void InitTest()
 		{
 			m_othello.Init();
-			Assert.AreEqual(Othello.eCellState.Empty, m_othello.GetCellState(1, 2));
-			Assert.AreEqual(Othello.eCellState.White, m_othello.GetCellState(3, 3));
-			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 4));
+			Assert.AreEqual(eCellState.Empty, m_othello.GetCellState(1, 2));
+			Assert.AreEqual(eCellState.White, m_othello.GetCellState(3, 3));
+			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 4));
 		}
 
 		[TestMethod()]
 		public void SetCellStateTest()
 		{
 			m_othello.Init();
-			m_othello.SetCellState(3, 2, Othello.eCellState.Black);
-			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 2));
-			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 3));
-			Assert.AreEqual(Othello.eCellState.Empty, m_othello.GetCellState(2, 2));
-			m_othello.SetCellState(2, 2, Othello.eCellState.White);
-			Assert.AreEqual(Othello.eCellState.White, m_othello.GetCellState(3, 3));
-			Assert.AreEqual(Othello.eCellState.Black, m_othello.GetCellState(3, 4));
+			m_othello.PutPieace(3, 2, eCellState.Black);
+			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 2));
+			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 3));
+			Assert.AreEqual(eCellState.Empty, m_othello.GetCellState(2, 2));
+			m_othello.PutPieace(2, 2, eCellState.White);
+			Assert.AreEqual(eCellState.White, m_othello.GetCellState(3, 3));
+			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 4));
 		}
 
 		[TestMethod()]
 		public void GetCellStateTest()
 		{
 			m_othello.Init();
-			Assert.AreEqual(Othello.eCellState.Empty, m_othello.GetCellState(1, 2));
+			Assert.AreEqual(eCellState.Empty, m_othello.GetCellState(1, 2));
 		}
 	}
 }

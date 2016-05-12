@@ -15,23 +15,22 @@ using System.Windows.Shapes;
 
 namespace OthelloApp
 {
-    /// <summary>
-    /// MainWindow.xaml の相互作用ロジック
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        private Othello m_othello;
+	/// <summary>
+	/// MainWindow.xaml の相互作用ロジック
+	/// </summary>
+	public partial class MainWindow : Window
+	{
+		private Othello m_othello;
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            this.Loaded += MainWindow_Loaded;
-        }
+		public MainWindow()
+		{
+			InitializeComponent();
+			this.Loaded += MainWindow_Loaded;
+		}
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            m_othello = new Othello();
-            m_othello.SetCellState(3, 3, Othello.eCellState.Black);
-        }
-    }
+		private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+		{
+			m_othello = new Othello();
+		}
+	}
 }

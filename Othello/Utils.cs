@@ -21,7 +21,7 @@ namespace OthelloApp
 		public static IEnumerable<IndexedElem<TElem>> EnumerateWithIndex<TElem>(this TElem[,] values)
 		{
 			for (int x = 0; x < values.GetLength(0); x++)
-				for (int y = 0; y < values.GetLength(0); y++)
+				for (int y = 0; y < values.GetLength(1); y++)
 					yield return new IndexedElem<TElem>(values[x, y], x, y);
 		}
 	}
