@@ -5,7 +5,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OthelloApp
+namespace OthelloModel
 {
 	public enum eStage
 	{

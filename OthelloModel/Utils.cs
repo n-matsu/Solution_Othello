@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OthelloApp
+namespace OthelloModel
 {
 	public class IndexedElem<TElem>
 	{

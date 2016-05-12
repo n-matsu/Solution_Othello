@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OthelloApp
+namespace OthelloModel
 {
 	public enum eCellState
 	{

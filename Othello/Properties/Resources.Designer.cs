@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OthelloApp.Properties {
+namespace OthelloModel.Properties {
     using System;
     
     
