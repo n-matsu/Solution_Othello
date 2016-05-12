@@ -55,9 +55,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Othello\OthelloApp.csproj">
-      <Project>{563F65FA-96F5-4645-8F9C-739AF2050C87}</Project>
-      <Name>OthelloApp</Name>
+    <ProjectReference Include="..\OthelloModel\OthelloModel.csproj">
+      <Project>{6d2e0752-7c9a-4644-a5d4-312c26bac1f8}</Project>
+      <Name>OthelloModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
