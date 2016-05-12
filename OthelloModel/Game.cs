@@ -18,10 +18,10 @@ namespace OthelloModel
 
 	public class StageChangedEventArgs : EventArgs
 	{
-		public eCellState NewSate { get; }
-		public StageChangedEventArgs(eStage newState)
+		public eStage Stage { get; }
+		public StageChangedEventArgs(eStage stage)
 		{
-			this.NewSate = NewSate;
+			this.Stage = stage;
 		}
 	}
 
@@ -79,21 +79,64 @@ namespace OthelloModel
 				});
 		}
 
-		public void Start()
-		{
-			this.Boad.Init();
-			this.ChangeStage(eStage.Started);
-		}
-
-		private void Reset()
+		public void Reset()
 		{
 			this.Result.Reset();
 			this.Boad.Clear();
 			this.ChangeStage(eStage.None);
 		}
 
+		public void Start()
+		{
+			this.Boad.Init();
+			this.ChangeStage(eStage.Started);
+			this.ChangeStage(eStage.BlackTern);
+		}
+
+		public bool CanPutPeace(int x, int y)
+		{
+			switch (this.Stage)
+			{
+				case eStage.BlackTern:
+					return this.Boad.CanPutPeace(x,y,eCellState.Black);
+				case eStage.WhiteTern:
+					return this.Boad.CanPutPeace(x,y,eCellState.White);
+				default:
+					return false;
+			}
+		}
+
+		public void PutPieace(int x, int y)
+		{
+			switch (this.Stage)
+			{
+				case eStage.BlackTern:
+					this.Boad.PutPieace(x, y, eCellState.Black);
+					this.ChangeStage(eStage.WhiteTern);
+					break;
+				case eStage.WhiteTern:
+					this.Boad.PutPieace(x, y, eCellState.White);
+					this.ChangeStage(eStage.BlackTern);
+					break;
+			}
+		}
+
+		public void Pass()
+		{
+			switch (this.Stage)
+			{
+				case eStage.BlackTern:
+					this.ChangeStage(eStage.WhiteTern);
+					break;
+				case eStage.WhiteTern:
+					this.ChangeStage(eStage.BlackTern);
+					break;
+			}
+		}
+
 		private void ChangeStage(eStage stage)
 		{
+			this.Stage = stage;
 			var e = new StageChangedEventArgs(stage);
 			m_evtStageChanged.OnNext(e);
 		}

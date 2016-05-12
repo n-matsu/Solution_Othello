@@ -34,9 +34,9 @@ namespace OthelloModel
 		}
 	}
 
-	internal static class CellExtensions
+	public static class CellExtensions
 	{
-		internal static string GetDispText(this eCellState state)
+		public static string GetDispText(this eCellState state)
 		{
 			switch (state)
 			{

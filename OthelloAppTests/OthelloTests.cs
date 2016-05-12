@@ -11,53 +11,49 @@ namespace OthelloApp.Tests
 	[TestClass()]
 	public class OthelloTests
 	{
-		Boad m_othello;
+		Game m_game;
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			m_othello = new Boad();
+			m_game = new Game();
 		}
 
 		[TestCleanup]
 		public void TestCleanup()
 		{
-			m_othello = null;
+			m_game = null;
 		}
 
 		[TestMethod()]
 		public void OthelloTest()
 		{
-			Assert.IsTrue(m_othello != null);
+			Assert.IsTrue(m_game != null);
 		}
 
 		[TestMethod()]
 		public void InitTest()
 		{
-			m_othello.Init();
-			Assert.AreEqual(eCellState.Empty, m_othello.GetCellState(1, 2));
-			Assert.AreEqual(eCellState.White, m_othello.GetCellState(3, 3));
-			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 4));
+			m_game.Reset();
+			m_game.Start();
+			Assert.AreEqual(eCellState.Empty, m_game.Boad.GetCellState(1, 2));
+			Assert.AreEqual(eCellState.White, m_game.Boad.GetCellState(3, 3));
+			Assert.AreEqual(eCellState.Black, m_game.Boad.GetCellState(3, 4));
 		}
 
 		[TestMethod()]
-		public void SetCellStateTest()
+		public void GameTest()
 		{
-			m_othello.Init();
-			m_othello.PutPieace(3, 2, eCellState.Black);
-			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 2));
-			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 3));
-			Assert.AreEqual(eCellState.Empty, m_othello.GetCellState(2, 2));
-			m_othello.PutPieace(2, 2, eCellState.White);
-			Assert.AreEqual(eCellState.White, m_othello.GetCellState(3, 3));
-			Assert.AreEqual(eCellState.Black, m_othello.GetCellState(3, 4));
-		}
-
-		[TestMethod()]
-		public void GetCellStateTest()
-		{
-			m_othello.Init();
-			Assert.AreEqual(eCellState.Empty, m_othello.GetCellState(1, 2));
+			m_game.Reset();
+			m_game.Start();
+			Assert.IsTrue(m_game.CanPutPeace(3, 2));
+			m_game.PutPieace(3, 2);
+			Assert.AreEqual(eCellState.Black, m_game.Boad.GetCellState(3, 2));
+			Assert.AreEqual(eCellState.Black, m_game.Boad.GetCellState(3, 3));
+			Assert.AreEqual(eCellState.Empty, m_game.Boad.GetCellState(2, 2));
+			m_game.PutPieace(2, 2);
+			Assert.AreEqual(eCellState.White, m_game.Boad.GetCellState(3, 3));
+			Assert.AreEqual(eCellState.Black, m_game.Boad.GetCellState(3, 4));
 		}
 	}
 }

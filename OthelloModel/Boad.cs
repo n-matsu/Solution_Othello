@@ -19,32 +19,34 @@ namespace OthelloModel
 			}
 		}
 
-		private const int SIZE = 8;
+		public const int SIZE = 8;
 		private readonly eCellState[,] m_cells = new eCellState[SIZE, SIZE];
 
 		private readonly Subject<CellStateChangedEventArgs> m_evtCellStateChanged =
 			new Subject<CellStateChangedEventArgs>();
 		public IObservable<CellStateChangedEventArgs> evtCellStateChanged => m_evtCellStateChanged;
 
-		public Boad()
+		internal Boad()
 		{
 		}
 
-		public void Init()
+		internal void Init()
 		{
 			this.Clear();
 			this.SetCellState(3, 3, eCellState.White);
 			this.SetCellState(3, 4, eCellState.Black);
 			this.SetCellState(4, 3, eCellState.Black);
 			this.SetCellState(4, 4, eCellState.White);
-			this.PrintDebug();
+			//this.PrintDebug();
 		}
 
-		public void Clear()
+		internal void Clear()
 		{
 			m_cells.EnumerateWithIndex()
 				.Effect(cell => m_cells[cell.X, cell.Y] = eCellState.Empty);
 		}
+
+		public IEnumerable<IndexedElem<eCellState>> Cells => m_cells.EnumerateWithIndex();
 
 		public eCellState GetCellState(int x, int y)
 		{
@@ -74,16 +76,25 @@ namespace OthelloModel
 					.SelectMany(vector => vector.vYs, (vector, vY) => new Point(vector.vX, vY));
 		}
 
-		public bool CanPutPeace(int x, int y, eCellState newState)
+		internal bool CanPutPeace(int x, int y, eCellState newState)
 		{
-			return
-				(eCellState.Empty == this.GetCellState(x, y)) &&
-				this.GetAllVectors()
+			var oldState = this.GetCellState(x, y);
+			if (eCellState.Empty != oldState) return false;
+			try
+			{
+				this.SetCellState(x, y, newState);
+				return 
+					this.GetAllVectors()
 					.AsParallel()
 					.Any(vector => DoesNeedToTurnOverCells(x, y, vector.X, vector.Y));
+			}
+			finally
+			{
+				this.SetCellState(x, y, oldState);
+			}
 		}
 
-		public void PutPieace(int x, int y, eCellState newState)
+		internal void PutPieace(int x, int y, eCellState newState)
 		{
 			if (!this.SetCellState(x, y, newState)) return;
 
@@ -93,20 +104,23 @@ namespace OthelloModel
 				.Where(vector => DoesNeedToTurnOverCells(x, y, vector.X, vector.Y))
 				.Effect(vector => TurnOverCells(x, y, vector.X, vector.Y))
 				.ToList();
-			this.PrintDebug();
+			//this.PrintDebug();
 		}
 
 		private bool DoesNeedToTurnOverCells(int changedX, int changedY, int vectorX, int vectorY)
 		{
+			//Console.WriteLine($"#{changedX},{changedY} ### vector:{vectorX},{vectorY}");//test
 			//単位ベクトル方向に、変更セルから近いセル順に列挙・要反転判定
 			int nToUpdate = 0;
 			eCellState newState = GetCellState(changedX, changedY);
 			var last = Enumerable.Range(1, SIZE - 1)
+				//.Effect(shift => Console.Write($"#{changedX},{changedY} # shift:{shift} "))//test
 				.Select(shift => new
 				{
 					X = changedX + vectorX * shift,
 					Y = changedY + vectorY * shift
 				})
+				//.Effect(cell => Console.WriteLine($"# {cell.X},{cell.Y}"))//test
 				.TakeWhile(cell =>
 					0 <= cell.X && cell.X < SIZE &&
 					0 <= cell.Y && cell.Y < SIZE &&
